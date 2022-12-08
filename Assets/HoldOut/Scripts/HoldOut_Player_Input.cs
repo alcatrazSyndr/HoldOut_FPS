@@ -8,6 +8,7 @@ public class HoldOut_Player_Input : MonoBehaviour
     public Vector2 MouseInput = Vector2.zero;
     public bool JumpInput = false;
     public bool SprintInput = false;
+    public bool ADSInput = false;
 
     private void Start()
     {
@@ -21,5 +22,6 @@ public class HoldOut_Player_Input : MonoBehaviour
 
         JumpInput = Input.GetKey(KeyCode.Space);
         SprintInput = Input.GetKey(KeyCode.LeftShift);
+        ADSInput = Input.GetKey(KeyCode.Mouse1);
     }
 }

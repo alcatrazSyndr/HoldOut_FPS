@@ -23,31 +23,32 @@ public class HoldOut_Player_Movement : MonoBehaviour
         Gravity();
         Movement();
         Jumping();
+    }
 
-        if (_playerCamera.fieldOfView > 85f && !_sprinting)
-        {
-            _playerCamera.fieldOfView -= Time.deltaTime * 90f;
-        }
+    public bool IsSprinting()
+    {
+        return _sprinting;
+    }
+
+    public bool IsWalking()
+    {
+        return _input.MovementInput != Vector2.zero && _grounded && !_sprinting;
     }
 
     public void Movement()
     {
         if (_grounded)
         {
-            if (!_input.SprintInput)
+            if (!_input.SprintInput && !_input.ADSInput)
             {
                 _rb.velocity = (_input.MovementInput.y * _movementSpeed * transform.forward) + (_input.MovementInput.x * _movementSpeed * transform.right);
                 _sprinting = false;
             }
-            else
+            else if (_input.SprintInput && !_input.ADSInput)
             {
                 if (_input.MovementInput.y > 0f && _input.MovementInput.x == 0f)
                 {
                     _rb.velocity = (_input.MovementInput.y * _movementSpeed * 1.5f * transform.forward) + (_input.MovementInput.x * _movementSpeed * transform.right);
-                    if (_playerCamera.fieldOfView < 90f)
-                    {
-                        _playerCamera.fieldOfView += Time.deltaTime * 90f;
-                    }
                     _sprinting = true;
                 }
                 else
@@ -55,6 +56,11 @@ public class HoldOut_Player_Movement : MonoBehaviour
                     _rb.velocity = (_input.MovementInput.y * _movementSpeed * transform.forward) + (_input.MovementInput.x * _movementSpeed * transform.right);
                     _sprinting = false;
                 }
+            }
+            else if (_input.ADSInput)
+            {
+                _rb.velocity = (_input.MovementInput.y * _movementSpeed * 0.5f * transform.forward) + (_input.MovementInput.x * _movementSpeed * 0.5f * transform.right);
+                _sprinting = false;
             }
         }
     }
@@ -66,7 +72,7 @@ public class HoldOut_Player_Movement : MonoBehaviour
 
     private void Jumping()
     {
-        if (_input.JumpInput && _grounded && _canJump)
+        if (_input.JumpInput && _grounded && _canJump && !_input.ADSInput)
         {
             Jump();
         }
